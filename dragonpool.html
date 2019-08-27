@@ -1,0 +1,33 @@
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js">
+</script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquerymobile/1.4.5/jquery.mobile.min.js">
+</script>
+<link type="text/css" rel="stylesheet"
+href="http://ajax.googleapis.com/ajax/libs/jquerymobile/1.4.5/jquery.mobile.min.css"/>
+<div data-role="header" data-position="fixed">
+</div>
+</head>
+<script>
+//load function is called when the page opens, it retrieves the posts in a ul format
+  function load()
+  {
+    $.ajax({
+    type: "GET",
+    url: 'http://localhost:8080/posts',
+    contentType: "application/json; charset=utf-8",
+    success: function(msg) {
+    $('#current').html(msg);
+    },
+    error: function(msg) {
+      alert("Error");
+    }
+    });
+  }
+</script>
+<body onload="load()">
+  <div align="center" id="current">
+  </div>
+  </body>
+  </html>
