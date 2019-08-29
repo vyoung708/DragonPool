@@ -3,7 +3,11 @@
 var EventEmitter = require('events').EventEmitter;
 var mysql = require('mysql');
 
-var dbinfo = require('../Passwords/databaseinfo.json');
+var dbinfo = {'multipleStatements: true,
+	host: 'localhost',
+	user: '<USERNAME>',
+	password: '<PASSWORD>',
+	database: '<DATABASE>'};
 
 var con = mysql.createConnection(dbinfo);
 con.connect(function(err) {

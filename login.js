@@ -1,4 +1,4 @@
-var database = require('./database');
+var database = require('./databaseClass');
 var db = new database();
 
 var express = require('express');
