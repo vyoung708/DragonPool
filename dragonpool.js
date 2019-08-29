@@ -59,6 +59,27 @@ app.get("/posts",function(req,res){
 });
 });
 
+//Get list of distinct 'from cities' - this can be used to generate a dropdown of cities for the filter
+app.get("/citylist", function(req,res){
+  citylist = [];
+  con.query("SELECT DISTINCT(from_loc) from POSTS;",
+  function(err,rows,fields)
+  {
+  if (err)
+  {
+    res.send("Error");
+  }
+  else
+  {
+    for (var i=0;i<rows.length;i++)
+    {
+      citylist.push(rows[i]);
+    }
+    res.send(citylist);
+  }
+});
+});
+
 //Filter posts by city/state
 app.get("/filter",function(req,res){
 	var from = req.query.from;
