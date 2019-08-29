@@ -58,19 +58,6 @@ app.get("/",function(req,res){
 		});
 })
 
-//Loads all of the posts
-app.get("/posts",function(req,res){
-	con.query('SELECT * FROM <POST TABLE>',
-		function(err,rows,fields){
-			if(err)
-				console.log('Error during query');
-			else{
-
-				}
-			res.send(str);	
-			}
-		});
-})
 
 //Filter posts by city/state
 app.get("/filter",function(req,res){
@@ -103,7 +90,7 @@ app.get("/addaccount",function(req,res){
 			else{
 				//checks if username or email already exists inside of the database
 				for(var i = 0; i < rows.length; i++){
-					if(rows[i].USERNAME == userQuery && rows[i].EMAIL == emailQuery){
+					if(rows[i].USERNAME == userQuery || rows[i].EMAIL == emailQuery){
 						found = 1;
 					}
 				}
@@ -117,11 +104,6 @@ app.get("/addaccount",function(req,res){
 		});
 })
 
-//Add a post
-//maybe use app.post?
-app.get("/addpost",function(req,res){
-	
-})
 
 //Edit account information from the database
 app.get("/edit",function(req,res){
