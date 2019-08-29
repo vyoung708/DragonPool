@@ -34,13 +34,6 @@ app.use(function(req, res, next) {
 //Will redirect to the main html page
 app.get("/",function(req,res){
 	res.redirect('/PROJECTMain.html');
-	con.query('SELECT * from course',
-		function(err,rows,fields){
-			if(err)
-				console.log('Error during query processing');
-			else
-				console.log('Here is the result: ', rows);
-		});
 });
 
 //Loads all of the posts
@@ -90,11 +83,10 @@ app.get("/filter",function(req,res){
 });
 });
 
-//(Colin) i think this should be a post request since passing this much information through query isn't very secure
-//Adds an account to the database
+//Adds an account to the database if username/email is currently not being used
 app.get("/addaccount",function(req,res){
 	//Account information that has been recieved by the webpage
-	//Changes these if necessary
+	//Changes these variables if necessary
 	var userQuery = req.query.USERNAME;
 	var passQuery = req.query.PASSWORD;
 	var emailQuery = req.query.EMAIL;
@@ -108,31 +100,27 @@ app.get("/addaccount",function(req,res){
 				console.log(err);
 			else{
 				//checks if username or email already exists inside of the database
-				for(var i = 0; i < rows.length; i++){
-					if(rows[i].USERNAME == userQuery && rows[i].EMAIL == emailQuery){
+				var i = 0;
+				while(i < row.length || found == 0){
+					if(rows[i].USERNAME == userQuery || rows[i].EMAIL == emailQuery)
 						found = 1;
-					}
+					i++;
 				}
 				if(found == 0){
-					//ADD INFO TO DATABASE
+					con.query('INSERT INTO accounts ("username","password","email","firstname","lastname","phone") VALUES ('+userQuery+','+passQuery+','+emailQuery+','+firstQuery+','+lastQuery+','+phoneQuery+')',
+						function(err,rows,fields){
+							if(err)
+								console.log('Error Adding Account');
+							else{
+								console.log('Account created');
+							}
+						});
 				}
-				else{
-          con.query("INSERT INTO ACCOUNT (username, password, phone, email, first_name, last_name) VALUES (" + userQuery + ", '" + passQuery + "', '" + phoneQuery + "', '" + emailQuery + "', '" + firstQuery + "', '" + lastQuery + "');",
-          function(err,rows,fields)
-          {
-          if (err)
-          {
-            res.send("Error");
-          }
-          else
-          {
-            res.send("Success");
-          }
-        });
-				}
+				else if(found == 1)
+					res.send('Username/Email currently in use');
 			}
 		});
-});
+})
 
 //Add a post
 app.post("/addpost",function(req,res){
@@ -151,8 +139,21 @@ app.post("/addpost",function(req,res){
 
 //Edit account information from the database
 app.get("/edit",function(req,res){
-
-});
+	//Account information that has been recieved by the webpage
+	//Changes these variables if necessary
+	var userQuery = req.query.USERNAME;
+	var passQuery = req.query.PASSWORD;
+	var emailQuery = req.query.EMAIL;
+	var firstQuery = req.query.FIRSTNAME;
+	var lastQuery = req.query.LASTNAME;
+	var phoneQuery = req.query.PHONE;
+	var found = 0;
+	con.query("UPDATE accounts SET	password='"+passQuery+"', email='"+emailQuery+"', firstname='"+firstQuery+"',lastname='"+lastQuery+"',phone='"+passQuery+"' WHERE username='"+userQuery+"'",
+		function(err,rows,fields){
+			if(err)
+				console.log(err);
+		});
+})
 
 //Removes a post
 //maybe use app.post?
