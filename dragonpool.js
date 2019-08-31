@@ -3,7 +3,7 @@
 */
 var express = require('express');
 var request = require('request');
-
+var cors = require('cors');
 var app = express();
 var mysql = require('mysql');
 var database = require('./database');
@@ -17,13 +17,11 @@ app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
 
 var con = mysql.createConnection({
-	//Lets you search through multiple tables in one query
-	multipleStatements: true,
-	host: 'localhost',
-	//Needs replace
-	user: '<USERNAME>',
-	password: '<PASSWORD>',
-	database: '<DATABASE>'
+host: 'localhost',
+port: '3306',
+user: 'root',
+password: 'password',
+database: 'school'
 });
 con.connect(function(err) {
 if (err) {
@@ -64,17 +62,26 @@ app.get("/home",function(req,res){
 
 //Loads all of the posts
 app.get("/posts",function(req,res){
-	con.query('SELECT * FROM <POST TABLE>',
-		function(err,rows,fields){
-			if(err)
-				console.log('Error during query');
-			else{
-
-				}
-			res.send(str);
-			}
-		});
-})
+  var posts_str = "<ul>";
+  con.query("select POSTS.account_id, from_loc, to_loc, type, date, description, num_riders, ACCOUNT.id, first_name, last_name, email from POSTS, ACCOUNT where POSTS.account_id = ACCOUNT.id;",
+  function(err,rows,fields)
+  {
+  if (err)
+  {
+    console.log('Error during query processing');
+  }
+  else
+  {
+    for (var i=0;i<rows.length;i++)
+    {
+      date = rows[i].date;
+      posts_str += "<li><b>" + rows[i].type + " Passengers in " + rows[i].from_loc + " to " + rows[i].to_loc + "</b><br>User: " + rows[i].first_name + " " + rows[i].last_name + "<br>Description: " + rows[i].description + "<br>Date: " + date + "</li>";
+    }
+    posts_str += "</ul";
+  }
+  res.send(posts_str);
+});
+});
 
 //Get list of distinct 'from cities' - this can be used to generate a dropdown of cities for the filter
 app.get("/citylist", function(req,res){
@@ -99,7 +106,6 @@ app.get("/citylist", function(req,res){
 
 //Filter posts by city/state
 app.get("/filter",function(req,res){
-
 	var from = req.query.from;
   var posts_str = "<ul>";
   con.query("select POSTS.account_id, from_loc, to_loc, type, date, description, num_riders, ACCOUNT.id, first_name, last_name, email from POSTS, ACCOUNT where POSTS.account_id = ACCOUNT.id & POSTS.from_loc = '" + from + "';",
@@ -123,7 +129,7 @@ app.get("/filter",function(req,res){
 });
 
 //Adds an account to the database if username/email is currently not being used
-app.post("/addaccount",function(req,res){
+app.get("/addaccount",function(req,res){
 	//Account information that has been recieved by the webpage
 	//Changes these variables if necessary
 	var userQuery = req.query.USERNAME;
@@ -198,7 +204,7 @@ app.post("/addpost",function(req,res){
 
 
 //Edit account information from the database
-app.post("/edit",function(req,res){
+app.get("/edit",function(req,res){
 	//Account information that has been recieved by the webpage
 	//Changes these variables if necessary
 	var userQuery = req.query.USERNAME;
@@ -217,36 +223,46 @@ app.post("/edit",function(req,res){
 
 //Removes a post
 //maybe use app.post?
-app.post("/deletepost",function(req,res){
-  con.query("DELETE FROM POSTS WHERE account_id = " + id + ";",
-  function(err,rows,fields){
-    if(err)
-      res.send("Error");
-    else
-    {
-      res.send("Post deleted");
-    }
-  });
+app.get("/deletepost",function(req,res){
+	var quer = "DELETE FROM posts WHERE post_id =" + req.query.postid + " AND account_id =" + req.session.userid;
+	con.query(quer, function(err, result) {
+		if(err){
+			console.log(err);
+		} else {
+			console.log(result.affectedRows);
+		}
+	});
 });
 
 //Edits a post only if it was created by the user
-app.post("/editpost",function(req,res){
-  con.query("UPDATE POSTS WHERE account_id = " + id + ";",
-  function(err,rows,fields){
-    if(err)
-      res.send("Error");
-    else
-    {
-      res.send("Post deleted");
-    }
-  });
+app.get("/editpost",function(req,res){
+	var quer = "SELECT account_id FROM posts WHERE post_id=" + req.query.postid;
+	var account = "";
+	con.query(quer, function(err, rows, fields) {
+		if(err){
+			console.log(err);
+		} else {
+			account = rows[0].account_id;
+		}
+	});
+	if(account == req.session.userid){
+		var quer = "UPDATE posts SET ";
+		var count = 0;
+		for (var param in req.query){
+			if(param != "account_id" and count != 0){
+				quer += " AND " + param + "=" + con.escape(req.query[param]);
+			} else if (param != "account_id") {
+				quer += param + "=" + con.escape(req.query[param]);
+			}
+		}
+	}
 });
 
 //Loads account information
 //maybe use app.post?
 app.get("/loadaccount",function(req,res){
 
-})
+});
 
 app.post('/login', function(req, res) {
 	db.once('loggedin', function(msg) {
@@ -276,4 +292,4 @@ app.get('/logout', function(req, res) {
 
 app.listen(8080, function(){
 	console.log('Server Started...');
-})
+});
