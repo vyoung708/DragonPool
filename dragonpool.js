@@ -204,15 +204,15 @@ app.post("/addpost",function(req,res){
 
 
 //Edit account information from the database
-app.get("/edit",function(req,res){
+app.post("/edit",function(req,res){
 	//Account information that has been recieved by the webpage
 	//Changes these variables if necessary
-	var userQuery = req.query.USERNAME;
-	var passQuery = req.query.PASSWORD;
-	var emailQuery = req.query.EMAIL;
-	var firstQuery = req.query.FIRSTNAME;
-	var lastQuery = req.query.LASTNAME;
-	var phoneQuery = req.query.PHONE;
+	var userQuery = req.body.USERNAME;
+	var passQuery = req.body.PASSWORD;
+	var emailQuery = req.body.EMAIL;
+	var firstQuery = req.body.FIRSTNAME;
+	var lastQuery = req.body.LASTNAME;
+	var phoneQuery = req.body.PHONE;
 	var found = 0;
 	con.query("UPDATE ACCOUNT SET password='"+passQuery+"', email='"+emailQuery+"', first_name='"+firstQuery+"',last_name='"+lastQuery+"',phone='"+passQuery+"' WHERE username='"+userQuery+"'",
 		function(err,rows,fields){
@@ -223,7 +223,7 @@ app.get("/edit",function(req,res){
 
 //Removes a post
 //maybe use app.post?
-app.get("/deletepost",function(req,res){
+app.post("/deletepost",function(req,res){
 	var quer = "DELETE FROM posts WHERE post_id =" + req.query.postid + " AND account_id =" + req.session.userid;
 	con.query(quer, function(err, result) {
 		if(err){
@@ -235,7 +235,7 @@ app.get("/deletepost",function(req,res){
 });
 
 //Edits a post only if it was created by the user
-app.get("/editpost",function(req,res){
+app.post("/editpost",function(req,res){
 	var quer = "SELECT account_id FROM posts WHERE post_id=" + req.query.postid;
 	var account = "";
 	con.query(quer, function(err, rows, fields) {
