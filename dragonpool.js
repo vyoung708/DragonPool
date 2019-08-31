@@ -6,9 +6,16 @@ var request = require('request');
 var cors = require('cors');
 var app = express();
 var mysql = require('mysql');
+var database = require('./database');
+var bodyParser = require("body-parser");
+
+var db = new database();
 app.use(cors());
 app.use(express.static('.'));
-var mysql = require('mysql');
+
+app.use(bodyParser.urlencoded({extended:false}));
+app.use(bodyParser.json());
+
 var con = mysql.createConnection({
 host: 'localhost',
 port: '3306',
@@ -25,14 +32,31 @@ console.log('Database successfully connected');
 }
 });
 
+app.use(session({
+	cookieName: 'session',
+	secret: 'edwardallenpoe1234',
+	duration: 30*60*1000,
+	activeDuration: 5*60*1000,
+}));
+
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
 });
 
+app.get('/', function (req, res){
+	if(req.session.msg){
+		res.write(req.session.msg);
+		delete req.session.msg;
+	}
+	req.session.destroy();
+	res.write("<html><body><form method=post action=\"/login\"><input type=\"text\" name=\"username\"><input type=\"password\" name=\"password\"><input type=\"submit\" value=\"Login\"></form></body></html>");
+	res.end();
+});
+
 //Will redirect to the main html page
-app.get("/",function(req,res){
+app.get("/home",function(req,res){
 	res.redirect('/PROJECTMain.html');
 });
 
@@ -212,6 +236,32 @@ app.get("/editpost",function(req,res){
 //maybe use app.post?
 app.get("/loadaccount",function(req,res){
 
+});
+
+app.post('/login', function(req, res) {
+	db.once('loggedin', function(msg) {
+		if(msg==1) {
+			var quer = "SELECT id FROM accounts WHERE username =" + con.escape(req.body.username);
+			con.query(quer, function(err, rows, fields) {
+				if(err){
+					console.log(err);
+				} else {
+					req.session.userid=rows[0].id;
+				}
+			});
+			return res.redirect('/home');
+		} else {
+			req.session.msg = "Invalid login";
+			return res.redirect('/');
+		}
+	});
+	db.login(req.body.username, req.body.password);
+});
+
+app.get('/logout', function(req, res) {
+	req.session.reset();
+	req.session.msg = 'You logged out';
+	return res.redirect('/');
 });
 
 app.listen(8080, function(){
