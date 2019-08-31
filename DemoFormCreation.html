@@ -22,16 +22,40 @@
           <li><a href="DemoContactPage.html">CONTACT</a></li>
         </ul>
       </nav>
-
     </div>
 </header>
 
 
-<div class="SplashIntro">
-  <img class= "splashimage" src="MainSplashImage.jpg" style="float: left;">
+<div class="ListingCont">
+<center>
 
-  <h1 style="font-style: italic;">DragonPool</h1>
+<form>
+  <br>
+  <br>
+  First name:<br>
+  <input type="text" name="firstname">
+  <br>
+  Last name:<br>
+  <input type="text" name="lastname">
+  <br>
+  Looking For:<br>
+  <select>
+    <option value="Driver">Driver</option>
+    <option value="Passengers">Passengers</option>
+  </select>
+  <br>
+  Date:<br>
+  <input type="date" name="DatePicked" placeholder="Select Date" min= "2019-01-01" max="2020-01-01" >
+  <br>
+  <br>
+  <!-- Button That Submits gathered data/could 'onclick' a function -->
+  <input type="submit" value="Submit">
+  <br>
+  <br>
+</form>
+
+</center>
 </div>
 
 </body>
-</html> 
+</html>
