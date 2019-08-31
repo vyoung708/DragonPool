@@ -261,7 +261,40 @@ app.get("/editpost",function(req,res){
 //Loads account information
 //maybe use app.post?
 app.get("/loadaccount",function(req,res){
-
+	var quer = "SELECT * FROM accounts WHERE id=" + req.session.userid;
+	var listStr = "<ul>";
+	con.connect(quer, function(err, rows, fields) {
+		if(err){
+			console.log(err);
+		} else {
+			for (var i = 0; i < rows.length; i++){
+				listStr += "<li>Username: " + rows[i].username + "</li>";
+				listStr += "<li>First Name: " + rows[i].first_name + "</li>";
+				listStr += "<li>Last Name: " + rows[i].last_name + "</li>";
+				listStr += "<li>Email: " + rows[i].email + "</li>";
+				listStr += "<li>Phone No.: " + rows[i].phone + "</li>";
+			}
+		}
+	});
+	listStr += "</ul>";
+	quer = "SELECT * FROM posts WHERE account_id=" + req.session.userid;
+	listStr += "<br>Posts:<br><ul>";
+	con.connect(quer, function(err, rows, fields) {
+		if(err){
+			console.log(err);
+		} else {
+			for (var i = 0; i < rows.length; i++){
+				listStr += "<li>Post ID: " + rows[i].post_id + "</li>";
+				listStr += "<li>From: " + rows[i].from_loc + "</li>";
+				listStr += "<li>To: " + rows[i].to_loc + "</li>";
+				listStr += "<li>Type: " + rows[i].type + "</li>";
+				listStr += "<li>Date: " + rows[i].date + "</li>";
+				listStr += "<li>Desc: " + rows[i].description + "</li>";
+				listStr += "<li>Riders: " + rows[i].num_riders + "</li>";
+			}
+		}
+	});
+	listStr += "</ul>";
 });
 
 app.post('/login', function(req, res) {
