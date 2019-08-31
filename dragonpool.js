@@ -123,12 +123,12 @@ app.get("/addaccount",function(req,res){
 				//checks if username or email already exists inside of the database
 				var i = 0;
 				while(i < row.length || found == 0){
-					if(rows[i].USERNAME == userQuery || rows[i].EMAIL == emailQuery)
+					if(rows[i].username == userQuery || rows[i].email == emailQuery)
 						found = 1;
 					i++;
 				}
 				if(found == 0){
-					con.query('INSERT INTO accounts ("username","password","email","firstname","lastname","phone") VALUES ('+userQuery+','+passQuery+','+emailQuery+','+firstQuery+','+lastQuery+','+phoneQuery+')',
+					con.query('INSERT INTO accounts ("username","password","email","phone","first_name","last_name") VALUES ('+userQuery+','+passQuery+','+emailQuery+','+phoneQuery+','+firstQuery+','+lastQuery+')',
 						function(err,rows,fields){
 							if(err)
 								console.log('Error Adding Account');
