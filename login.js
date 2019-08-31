@@ -33,8 +33,15 @@ app.get('/', function (req, res){
 app.post('/login', function(req, res) {
 	db.once('loggedin', function(msg) {
 		if(msg==1) {
-			req.session.username=req.body.username;
-			return res.send('Successful login');
+			var quer = "SELECT id FROM accounts WHERE username =" + req.body.username;
+			con.query(quer, function(err, rows, fields) {
+				if(err){
+					console.log(err);
+				} else {
+					req.session.userid=rows[0].id;
+				}
+			}
+			return res.send(req.session.userid);
 		} else {
 			req.session.msg = "Invalid login";
 			return res.redirect('/');
