@@ -25,6 +25,93 @@ href="http://ajax.googleapis.com/ajax/libs/jquerymobile/1.4.5/jquery.mobile.min.
     }
     });
   }
+
+  function filter(from)
+  {
+    $.ajax({
+    type: "GET",
+    url: 'http://localhost:8080/filter?from=' + city,
+    contentType: "application/json; charset=utf-8",
+    success: function(msg) {
+    $('#current').html(msg);
+    },
+    error: function(msg) {
+      alert("Error");
+    }
+    });
+  }
+
+  function getCities()
+  {
+    $.ajax({
+    type: "GET",
+    url: 'http://localhost:8080/citylist',
+    contentType: "application/json; charset=utf-8",
+    success: function(msg) {
+    $('#current').html(msg);
+    },
+    error: function(msg) {
+      alert("Error");
+    }
+    });
+  }
+
+  function addAccount()
+  {
+    var account = {
+      'username': username,
+      'password': password,
+      'email': email,
+      'firstname': firstname,
+      'lastname': lastname,
+      'phone': phone
+    };
+
+    $.ajax({
+    type: "POST",
+    url: 'http://localhost:8080/addaccount',
+    headers: {"Access-Control-Allow-Origin": "*"},
+    data: account,
+    dataType: 'text',
+    contentType: "application/json; charset=utf-8",
+    success: function(msg) {
+    alert("Account added!");
+    },
+    error: function(msg) {
+      alert("Error");
+    }
+    });
+  }
+
+  function addPost()
+  {
+    var post = {
+      'account_id': id,
+      'from_loc': from,
+      'to_loc': to,
+      'type': type,
+      'date': date,
+      'descrption': desc,
+      'num_riders': num_riders,
+    };
+
+    $.ajax({
+    type: "POST",
+    url: 'http://localhost:8080/addpost',
+    headers: {"Access-Control-Allow-Origin": "*"},
+    data: post,
+    dataType: 'text',
+    contentType: "application/json; charset=utf-8",
+    success: function(msg) {
+    alert("Post added!");
+    },
+    error: function(msg) {
+      alert("Error");
+    }
+    });
+  }
+
+
 </script>
 <body onload="load()">
   <div align="center" id="current">

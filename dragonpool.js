@@ -129,15 +129,15 @@ app.get("/filter",function(req,res){
 });
 
 //Adds an account to the database if username/email is currently not being used
-app.get("/addaccount",function(req,res){
+app.post("/addaccount",function(req,res){
 	//Account information that has been recieved by the webpage
 	//Changes these variables if necessary
-	var userQuery = req.query.USERNAME;
-	var passQuery = req.query.PASSWORD;
-	var emailQuery = req.query.EMAIL;
-	var firstQuery = req.query.FIRSTNAME;
-	var lastQuery = req.query.LASTNAME;
-	var phoneQuery = req.query.PHONE;
+	var userQuery = req.body.username;
+	var passQuery = req.body.password;
+	var emailQuery = req.body.email;
+	var firstQuery = req.body.firstname;
+	var lastQuery = req.body.lastname;
+	var phoneQuery = req.body.phone;
 	var found = 0;
 	con.query('SELECT * FROM ACCOUNT',
 		function(err,rows,fields){
