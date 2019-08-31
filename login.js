@@ -1,4 +1,4 @@
-var database = require('./databaseClass');
+var database = require('./database');
 var db = new database();
 
 var express = require('express');
@@ -12,6 +12,9 @@ app.use(session({
 }));
 
 var mysql = require('mysql');
+var bodyParser = require("body-parser");
+app.use(bodyParser.urlencoded({extended:false}));
+app.use(bodyParser.json());
 
 app.use(express.static('.'));
 
@@ -23,7 +26,7 @@ app.get('/', function (req, res){
 		delete req.session.msg;
 	}
 	req.session.destroy();
-	res.write("<html><body><form method=post action=\"/login\"><input type=text name=username><input type=password name=password><input type=submit value=Login></form></body></html>");
+	res.write("<html><body><form method=post action=\"/login\"><input type=\"text\" name=\"username\"><input type=\"password\" name=\"password\"><input type=\"submit\" value=\"Login\"></form></body></html>");
 	res.end();
 });
 
@@ -31,7 +34,7 @@ app.post('/login', function(req, res) {
 	db.once('loggedin', function(msg) {
 		if(msg==1) {
 			req.session.userid=req.body.username;
-			return res.redirect('/<landing page>');
+			return res.send('Successful login');
 		} else {
 			req.session.msg = "Invalid login";
 			return res.redirect('/');

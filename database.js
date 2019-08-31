@@ -5,9 +5,8 @@ var mysql = require('mysql');
 
 var con = mysql.createConnection({
 host: 'localhost',
-port: '3306',
-user: 'root',
-password: 'password',
+user: 'vly25',
+password: 'f1nb4ry0un6',
 database: 'school'
 });
 
@@ -22,7 +21,7 @@ con.connect(function(err) {
 class Database extends EventEmitter {
 	constructor(){super();}
 	login(username, password) {
-		var str = "SELECT type FROM accounts WHERE username=" + con.escape(username) + " AND password=PASSWORD(" + con.escape(password) + ")";
+		var str = "SELECT type FROM accounts WHERE username=" + con.escape(username) + " AND password=" + con.escape(password);
 		var self = this;
 		con.query(str,
 			function(err, rows, fields) {
