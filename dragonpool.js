@@ -115,7 +115,7 @@ app.get("/addaccount",function(req,res){
 	var lastQuery = req.query.LASTNAME;
 	var phoneQuery = req.query.PHONE;
 	var found = 0;
-	con.query('SELECT * FROM accounts',
+	con.query('SELECT * FROM ACCOUNT',
 		function(err,rows,fields){
 			if(err)
 				console.log(err);
@@ -128,7 +128,7 @@ app.get("/addaccount",function(req,res){
 					i++;
 				}
 				if(found == 0){
-					con.query('INSERT INTO accounts ("username","password","email","phone","first_name","last_name") VALUES ('+userQuery+','+passQuery+','+emailQuery+','+phoneQuery+','+firstQuery+','+lastQuery+')',
+					con.query('INSERT INTO ACCOUNT ("username","password","email","phone","first_name","last_name") VALUES ('+userQuery+','+passQuery+','+emailQuery+','+phoneQuery+','+firstQuery+','+lastQuery+')',
 						function(err,rows,fields){
 							if(err)
 								console.log('Error Adding Account');
@@ -144,8 +144,10 @@ app.get("/addaccount",function(req,res){
 })
 
 //Add a post
+//Added code that pulls the ID from the database based on the username (passed in through query) - may not be necessary later on
 app.post("/addpost",function(req,res){
   username = req.query.user;
+  id = 0;
   con.query("SELECT id from ACCOUNT where ACCOUNT.username = '" + username + "';",
   function(err,rows,fields)
   {
@@ -155,7 +157,8 @@ app.post("/addpost",function(req,res){
   }
   else if (rows.length > 0)
   {
-    con.query("INSERT INTO POSTS (account_id, from_loc, to_loc, type, date, description, num_riders) VALUES (" + account_id + ", '" + from_loc + "', '" + to_loc + "', '" + type + "', '" + date + "', '" + description + "', " + num_riders + ");",
+    id = rows[0];
+    con.query("INSERT INTO POSTS (account_id, from_loc, to_loc, type, date, description, num_riders) VALUES (" + id + ", '" + from_loc + "', '" + to_loc + "', '" + type + "', '" + date + "', '" + description + "', " + num_riders + ");",
     function(err,rows,fields)
     {
     if (err)
@@ -167,6 +170,10 @@ app.post("/addpost",function(req,res){
       res.send("Success");
     }
     });
+  }
+  else
+  {
+    res.send("No account found for this user");
   }
   });
   });
@@ -183,7 +190,7 @@ app.get("/edit",function(req,res){
 	var lastQuery = req.query.LASTNAME;
 	var phoneQuery = req.query.PHONE;
 	var found = 0;
-	con.query("UPDATE accounts SET	password='"+passQuery+"', email='"+emailQuery+"', firstname='"+firstQuery+"',lastname='"+lastQuery+"',phone='"+passQuery+"' WHERE username='"+userQuery+"'",
+	con.query("UPDATE ACCOUNT SET password='"+passQuery+"', email='"+emailQuery+"', first_name='"+firstQuery+"',last_name='"+lastQuery+"',phone='"+passQuery+"' WHERE username='"+userQuery+"'",
 		function(err,rows,fields){
 			if(err)
 				console.log(err);
