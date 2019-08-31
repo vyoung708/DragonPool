@@ -51,7 +51,7 @@ app.get('/', function (req, res){
 		delete req.session.msg;
 	}
 	req.session.destroy();
-	res.write("<html><body><form method=post action=\"/login\"><input type=\"text\" name=\"username\"><input type=\"password\" name=\"password\"><input type=\"submit\" value=\"Login\"></form></body></html>");
+	res.write("<html><body><form method=post action=\"/login\"><input type=\"text\" name=\"username\"><br><input type=\"password\" name=\"password\"><br><input type=\"submit\" value=\"Login\"></form></body></html>");
 	res.end();
 });
 
