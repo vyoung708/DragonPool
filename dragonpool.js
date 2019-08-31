@@ -145,18 +145,32 @@ app.get("/addaccount",function(req,res){
 
 //Add a post
 app.post("/addpost",function(req,res){
-  con.query("INSERT INTO POSTS (account_id, from_loc, to_loc, type, date, description, num_riders) VALUES (" + account_id + ", '" + from_loc + "', '" + to_loc + "', '" + type + "', '" + date + "', '" + description + "', " + num_riders + ");",
+  username = req.query.user;
+  con.query("SELECT id from ACCOUNT where ACCOUNT.username = '" + username + "';",
   function(err,rows,fields)
   {
   if (err)
   {
     res.send("Error");
   }
-  else
+  else if (rows.length > 0)
   {
-    res.send("Success");
+    con.query("INSERT INTO POSTS (account_id, from_loc, to_loc, type, date, description, num_riders) VALUES (" + account_id + ", '" + from_loc + "', '" + to_loc + "', '" + type + "', '" + date + "', '" + description + "', " + num_riders + ");",
+    function(err,rows,fields)
+    {
+    if (err)
+    {
+      res.send("Error");
+    }
+    else
+    {
+      res.send("Success");
+    }
+    });
   }
-});
+  });
+  });
+
 
 //Edit account information from the database
 app.get("/edit",function(req,res){

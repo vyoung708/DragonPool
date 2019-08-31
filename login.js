@@ -33,7 +33,7 @@ app.get('/', function (req, res){
 app.post('/login', function(req, res) {
 	db.once('loggedin', function(msg) {
 		if(msg==1) {
-			req.session.userid=req.body.username;
+			req.session.username=req.body.username;
 			return res.send('Successful login');
 		} else {
 			req.session.msg = "Invalid login";
