@@ -21,7 +21,7 @@ con.connect(function(err) {
 class Database extends EventEmitter {
 	constructor(){super();}
 	login(username, password) {
-		var str = "SELECT type FROM accounts WHERE username=" + con.escape(username) + " AND password=" + con.escape(password);
+		var str = "SELECT * FROM accounts WHERE username=" + con.escape(username) + " AND password=" + con.escape(password);
 		var self = this;
 		con.query(str,
 			function(err, rows, fields) {
