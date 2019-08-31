@@ -40,7 +40,7 @@ app.post('/login', function(req, res) {
 				} else {
 					req.session.userid=rows[0].id;
 				}
-			}
+			});
 			return res.send(req.session.userid);
 		} else {
 			req.session.msg = "Invalid login";
