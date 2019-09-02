@@ -1,50 +1,82 @@
 /*Variables with <> or all caps should be replaced when
 * HTML and mySQL variables are known
 */
+
 var express = require('express');
+
 var request = require('request');
+
 var cors = require('cors');
+
 var app = express();
+
 var mysql = require('mysql');
+
 var database = require('./database');
+
 var bodyParser = require("body-parser");
 
+
 var db = new database();
+
 app.use(cors());
+
 app.use(express.static('.'));
 
+
 app.use(bodyParser.urlencoded({extended:false}));
+
 app.use(bodyParser.json());
 
+
 var con = mysql.createConnection({
-	host: 'localhost',
-	port: '3306',
-	user: 'root',
-	password: 'password',
-	database: 'school'
+	
+host: 'localhost',
+	
+user: 'vly25',
+	
+password: 'f1nb4ry0un6',
+	
+database: 'school'
 });
+
 con.connect(function(err) {
-	if (err) {
-		console.log(err);
+	
+if (err) {
+		
+console.log(err);
 	}
-	else {
-		console.log('Database successfully connected');
-	}
+	
+else {
+		
+console.log('Database successfully connected');
+	
+}
 });
+
 var session = require('client-sessions');
 
+
 app.use(session({
-	cookieName: 'session',
-	secret: 'edwardallenpoe1234',
-	duration: 30*60*1000,
-	activeDuration: 5*60*1000,
+	
+cookieName: 'session',
+	
+secret: 'edwardallenpoe1234',
+	
+duration: 30*60*1000,
+	
+activeDuration: 5*60*1000,
 }));
 
+
 app.use(function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    
+res.header("Access-Control-Allow-Origin", "*");
+    
+res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
 });
+
 
 app.get('/', function (req, res){
 	if(req.session.msg){
@@ -56,28 +88,31 @@ app.get('/', function (req, res){
 });
 
 //Will redirect to the main html page
+
 app.get("/home",function(req,res){
-	res.redirect('/PROJECTMain.html');
+	return res.redirect('/PROJECTMain.html');
 });
 
+
 //Loads all of the posts
+
 app.get("/posts",function(req,res){
   var posts_str = "<ul>";
-  con.query("select POSTS.account_id, from_loc, to_loc, type, date, description, num_riders, ACCOUNT.id, first_name, last_name, email from POSTS, ACCOUNT where POSTS.account_id = ACCOUNT.id;",
+  con.query("SELECT * FROM posts",
   function(err,rows,fields)
   {
   if (err)
   {
-    console.log('Error during query processing');
+    console.log(err);
   }
   else
   {
     for (var i=0;i<rows.length;i++)
     {
       var date = rows[i].date;
-      posts_str += "<li><b>" + rows[i].type + " Passengers in " + rows[i].from_loc + " to " + rows[i].to_loc + "</b><br>User: " + rows[i].first_name + " " + rows[i].last_name + "<br>Description: " + rows[i].description + "<br>Date: " + date + "</li>";
+      posts_str += "<li><b>" + rows[i].type + " Passengers in " + rows[i].from_loc + " to " + rows[i].to_loc + "</b><br>User: " + rows[i].account_id + "<br>Description: " + rows[i].description + "<br>Date: " + date + "</li>";
     }
-    posts_str += "</ul";
+    posts_str += "</ul>";
   }
   res.send(posts_str);
 });
@@ -85,13 +120,13 @@ app.get("/posts",function(req,res){
 
 //Get list of distinct 'from cities' - this can be used to generate a dropdown of cities for the filter
 app.get("/citylist", function(req,res){
-  var citylist = "";
+  var citylist = "<select>";
   con.query("SELECT DISTINCT(from_loc) from POSTS",
   function(err,rows,fields)
   {
   if (err)
   {
-    res.send("Error");
+    console.log(err);
   }
   else
   {
@@ -99,7 +134,7 @@ app.get("/citylist", function(req,res){
     {
 	    citylist += "<option value=\"" + rows[i].from_loc + "\">" + rows[i].from_loc + "</option>";
     }
-    res.send(citylist);
+    citylist += "</select>"; res.send(citylist);
   }
   });
 });
@@ -114,7 +149,7 @@ app.get("/filter",function(req,res){
   {
   if (err)
   {
-    console.log('Error during query processing');
+    console.log(err);
   }
   else
   {
@@ -140,7 +175,7 @@ app.post("/addaccount",function(req,res){
 	var lastQuery = req.body.lastname;
 	var phoneQuery = req.body.phone;
 	var found = 0;
-	con.query('SELECT * FROM account',
+	con.query('SELECT * FROM ACCOUNT',
 		function(err,rows,fields){
 			if(err){
 				console.log(err);
@@ -156,7 +191,7 @@ app.post("/addaccount",function(req,res){
 				}
 				if(found == 0){
 					if(phoneQuery != ""){
-						con.query('INSERT INTO ACCOUNT (username,password,email,phone,first_name,last_name) VALUES ('+con.escape(userQuery)+','+con.escape(passQuery)+','+con.escape(emailQuery)+','+con.escape(phoneQuery)+','+con.escape(firstQuery)+','+con.escape(lastQuery)+')',
+						con.query('INSERT INTO account (username,password,email,phone,first_name,last_name) VALUES ('+con.escape(userQuery)+','+con.escape(passQuery)+','+con.escape(emailQuery)+','+con.escape(phoneQuery)+','+con.escape(firstQuery)+','+con.escape(lastQuery)+')',
 							function(err,result){
 								if(err){
 									console.log(err);
@@ -167,7 +202,7 @@ app.post("/addaccount",function(req,res){
 						});
 					}
 					else{
-						con.query('INSERT INTO ACCOUNT ("username","password","email","first_name","last_name") VALUES ('+userQuery+','+passQuery+','+emailQuery+','+firstQuery+','+lastQuery+')',
+						con.query('INSERT INTO ACCOUNT (username,password,email,first_name,last_name) VALUES ('+con.escape(userQuery)+','+con.escape(passQuery)+','+con.escape(emailQuery)+','+con.escape(firstQuery)+','+con.escape(lastQuery)+')',
 							function(err,result){
 								if(err){
 									console.log(err);
@@ -192,7 +227,7 @@ app.post("/addpost",function(req,res){
 	quer += con.escape(req.session.userid) + "," + con.escape(req.body.from_loc) + "," + con.escape(req.body.to_loc) + "," + con.escape(req.body.type) + "," + con.escape(req.body.date) + "," + con.escape(req.body.description) + "," + con.escape(req.body.num_riders) + ")";
     con.query(quer, function(err,result) {
     	if (err) {
-      		res.send("Error");
+      		console.log(err);
     	}
     	else {
       		res.send("Success");
@@ -342,16 +377,16 @@ app.get("/loadaccount",function(req,res){
 
 app.post('/login', function(req, res) {
 	db.once('loggedin', function(msg) {
-		if(msg==1) {
-			var quer = "SELECT id FROM accounts WHERE username =" + con.escape(req.body.username);
+	 if(msg==1) {
+			var quer = "SELECT id FROM account WHERE username =" + con.escape(req.body.username);
 			con.query(quer, function(err, rows, fields) {
 				if(err){
 					console.log(err);
 				} else {
 					req.session.userid=rows[0].id;
+ res.redirect("http://localhost:8080/PROJECTMain.html");
 				}
 			});
-			return res.redirect('/home');
 		} else {
 			req.session.msg = "Invalid login";
 			return res.redirect('/');
