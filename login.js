@@ -31,23 +31,20 @@ app.get('/', function (req, res){
 });
 
 app.post('/login', function(req, res) {
-	db.once('loggedin', function(msg) {
-		if(msg==1) {
-			var quer = "SELECT id FROM accounts WHERE username =" + req.body.username;
-			con.query(quer, function(err, rows, fields) {
-				if(err){
-					console.log(err);
-				} else {
+		var quer = "SELECT id FROM accounts WHERE username =" + req.body.username + " AND password=" req.body.password;
+		con.query(quer, function(err, rows, fields) {
+			if(err){
+				console.log(err);
+			} else {
+				if(rows.length > 0){
 					req.session.userid=rows[0].id;
+				} else {
+					req.session.msg = "Invalid login";
+					return res.redirect('/');
 				}
-			});
-			return res.send(req.session.userid);
-		} else {
-			req.session.msg = "Invalid login";
-			return res.redirect('/');
-		}
-	});
-	db.login(req.body.username, req.body.password);
+			}
+		});
+		return res.send(req.session.userid);
 });
 
 app.get('/logout', function(req, res) {
