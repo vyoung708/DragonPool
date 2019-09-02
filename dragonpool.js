@@ -152,14 +152,24 @@ app.post("/addaccount",function(req,res){
 					i++;
 				}
 				if(found == 0){
-					con.query('INSERT INTO ACCOUNT ("username","password","email","phone","first_name","last_name") VALUES ('+userQuery+','+passQuery+','+emailQuery+','+phoneQuery+','+firstQuery+','+lastQuery+')',
-						function(err,rows,fields){
-							if(err)
-								console.log('Error Adding Account');
-							else{
-								console.log('Account created');
+					if(phoneQuery != ""){
+						con.query('INSERT INTO ACCOUNT ("username","password","email","phone","first_name","last_name") VALUES ('+userQuery+','+passQuery+','+emailQuery+','+phoneQuery+','+firstQuery+','+lastQuery+')',
+							function(err,rows,fields){
+								if(err)
+									console.log('Error Adding Account');
+								else{
+									console.log('Account created without phone number');
 							}
 						});
+					}
+					else{
+						con.query('INSERT INTO ACCOUNT ("username","password","email","first_name","last_name") VALUES ('+userQuery+','+passQuery+','+emailQuery+','+firstQuery+','+lastQuery+')',
+							function(err,rows,fields){
+								if(err)
+									console.log('Error Adding Account');
+								else{
+									console.log('Account created with phone number');
+					}
 				}
 				else if(found == 1)
 					res.send('Username/Email currently in use');
@@ -207,22 +217,62 @@ app.post("/addpost",function(req,res){
 app.post("/edit",function(req,res){
 	//Account information that has been recieved by the webpage
 	//Changes these variables if necessary
-	var userQuery = req.body.USERNAME;
-	var passQuery = req.body.PASSWORD;
-	var emailQuery = req.body.EMAIL;
-	var firstQuery = req.body.FIRSTNAME;
-	var lastQuery = req.body.LASTNAME;
-	var phoneQuery = req.body.PHONE;
-	var found = 0;
-	con.query("UPDATE ACCOUNT SET password='"+passQuery+"', email='"+emailQuery+"', first_name='"+firstQuery+"',last_name='"+lastQuery+"',phone='"+passQuery+"' WHERE username='"+userQuery+"'",
-		function(err,rows,fields){
-			if(err)
-				console.log(err);
-		});
+	var userQuery = req.body.username;
+	var passQuery = req.body.password;
+	var emailQuery = req.body.email;
+	var firstQuery = req.body.first_name;
+	var lastQuery = req.body.last_name;
+	var phoneQuery = req.body.phone;
+	//Each if statment checks if the variable is not null
+	if(passQuery != ""){
+	//each con.query updates a column of the database that is associated with the username
+	con.query('UPDATE student SET password= CASE WHEN NOT password = "'+passQuery+'" THEN "'+passQuery+ '" ELSE password END WHERE username="'+userQuery+'"',
+			function(err,row,fields){
+				if(err)
+					console.log(err);
+				else
+					console.log("Password changed");
+			})
+	}
+	if(emailQuery != ""){
+	con.query('UPDATE student SET email= CASE WHEN NOT email = "'+emailQuery+'" THEN "'+emailQuery+ '" ELSE email END WHERE username="'+userQuery+'"',
+			function(err,row,fields){
+				if(err)
+					console.log(err);
+				else
+					console.log("email changed");
+			})
+	}
+	if(firstQuery != ""){
+	con.query('UPDATE student SET first_name= CASE WHEN NOT first_name = "'+firstQuery+'" THEN "'+firstQuery+ '" ELSE first_name END WHERE username="'+userQuery+'"',
+			function(err,row,fields){
+				if(err)
+					console.log(err);
+				else
+					console.log("first name changed");
+			})
+	}
+	if(lastQuery != ""){
+	con.query('UPDATE student SET last_name= CASE WHEN NOT last_name = "'+lastQuery+'" THEN "'+lastQuery+ '" ELSE last_name END WHERE username="'+userQuery+'"',
+			function(err,row,fields){
+				if(err)
+					console.log(err);
+				else
+					console.log("last name changed");
+			})
+	}
+	if(phoneQuery != ""){
+	con.query('UPDATE student SET phone= CASE WHEN NOT phone = "'+phoneQuery+'" THEN "'+phoneQuery+ '" ELSE phone END WHERE username="'+userQuery+'"',
+			function(err,row,fields){
+				if(err)
+					console.log(err);
+				else
+					console.log("phone number changed");
+			})
+	}
 })
 
 //Removes a post
-//maybe use app.post?
 app.post("/deletepost",function(req,res){
 	var quer = "DELETE FROM posts WHERE post_id =" + req.query.postid + " AND account_id =" + req.session.userid;
 	con.query(quer, function(err, result) {
@@ -259,7 +309,6 @@ app.post("/editpost",function(req,res){
 });
 
 //Loads account information
-//maybe use app.post?
 app.get("/loadaccount",function(req,res){
 	var quer = "SELECT * FROM accounts WHERE id=" + req.session.userid;
 	var listStr = "<ul>";
