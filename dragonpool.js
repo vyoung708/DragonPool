@@ -188,15 +188,15 @@ app.post("/addaccount",function(req,res){
 //Add a post
 //Added code that pulls the ID from the database based on the username (passed in through query) - may not be necessary later on
 app.post("/addpost",function(req,res){
-    con.query("INTO POSTS (account_id, from_loc, to_loc, type, date, description, num_riders) VALUES ('" + req.session.userid + "', '" + req.body.from_loc + "', '" + req.body.to_loc + "', '" + req.body.type + "', '" + req.body.date + "', '" + req.body.description + "', '" + req.body.num_riders + "')",
-    function(err,result) {
+	var quer = "INSERT INTO posts (account_id, from_loc, to_loc, type, date, description, num_riders) VALUES ";
+	quer += con.escape(req.session.userid) + "," + con.escape(req.body.from_loc) + "," + con.escape(req.body.to_loc) + "," + con.escape(req.body.type) + "," + con.escape(req.body.date) + "," + con.escape(req.body.description) + "," + con.escape(req.body.num_riders + ")";
+    con.query(quer, function(err,result) {
     	if (err) {
       		res.send("Error");
     	}
     	else {
       		res.send("Success");
     	}
-    }
     });
 });
 
