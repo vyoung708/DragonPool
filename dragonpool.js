@@ -17,19 +17,19 @@ app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
 
 var con = mysql.createConnection({
-host: 'localhost',
-port: '3306',
-user: 'root',
-password: 'password',
-database: 'school'
+	host: 'localhost',
+	port: '3306',
+	user: 'root',
+	password: 'password',
+	database: 'school'
 });
 con.connect(function(err) {
-if (err) {
-console.log(err);
-}
-else {
-console.log('Database successfully connected');
-}
+	if (err) {
+		console.log(err);
+	}
+	else {
+		console.log('Database successfully connected');
+	}
 });
 
 app.use(session({
@@ -84,8 +84,8 @@ app.get("/posts",function(req,res){
 
 //Get list of distinct 'from cities' - this can be used to generate a dropdown of cities for the filter
 app.get("/citylist", function(req,res){
-  citylist = [];
-  con.query("SELECT DISTINCT(to_loc) from POSTS",
+  var citylist = "";
+  con.query("SELECT DISTINCT(from_loc) from POSTS",
   function(err,rows,fields)
   {
   if (err)
@@ -96,11 +96,11 @@ app.get("/citylist", function(req,res){
   {
     for (var i=0;i<rows.length;i++)
     {
-      citylist.push(rows[i]);
+	    citylist += "<option value=\"" + rows[i].from_loc + "\">" + rows[i].from_loc + "</option>";
     }
     res.send(citylist);
   }
-});
+  });
 });
 
 //Filter posts by city/state
