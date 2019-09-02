@@ -111,6 +111,24 @@ href="http://ajax.googleapis.com/ajax/libs/jquerymobile/1.4.5/jquery.mobile.min.
     });
   }
 
+  function deletePost()
+  {
+    var postid = 0;
+    $.ajax({
+    type: "GET",
+    url: 'http://localhost:8080/deletepost&postid=' + postid,
+    contentType: "application/json; charset=utf-8",
+    success: function(msg) {
+    alert("Post deleted!");
+    },
+    error: function(msg) {
+      alert("Error");
+    }
+    });
+  }
+
+
+
 
 </script>
 <body onload="load()">

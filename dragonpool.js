@@ -273,7 +273,7 @@ app.post("/edit",function(req,res){
 })
 
 //Removes a post
-app.post("/deletepost",function(req,res){
+app.get("/deletepost",function(req,res){
 	var quer = "DELETE FROM posts WHERE post_id =" + req.query.postid + " AND account_id =" + req.session.userid;
 	con.query(quer, function(err, result) {
 		if(err){
