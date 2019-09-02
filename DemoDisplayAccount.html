@@ -4,11 +4,25 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" type="text/css" href="Demostylesheet.css">
-
+<script>
+function loadaccount() {
+    	$.ajax({
+    		type: "GET",
+    		url: 'http://localhost:8080/loadaccount',
+    		contentType: "application/json; charset=utf-8",
+    		success: function(msg) {
+    			$('#ListingCont').html(msg);
+    		},
+    		error: function(jgXHR, textStatus, errorThrown) {
+			alert("Error: " + textStatus + " " + errorThrown);
+		}
+    	});
+  }
+</script>
 </head>
 
-<body>
-	
+<body onload="loadaccount()">
+
 <header>
     <div class="container">
       <a href="DemoMainPage.html">
