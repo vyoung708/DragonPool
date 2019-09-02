@@ -12,12 +12,8 @@ var app = express();
 
 var mysql = require('mysql');
 
-var database = require('./database');
-
 var bodyParser = require("body-parser");
 
-
-var db = new database();
 
 app.use(cors());
 
@@ -384,23 +380,19 @@ app.get("/loadaccount",function(req,res){
 });
 
 app.post('/login', function(req, res) {
-	db.once('loggedin', function(msg) {
-	 if(msg==1) {
-			var quer = "SELECT id FROM account WHERE username =" + con.escape(req.body.username);
+		var quer = "SELECT id FROM account WHERE username =" + con.escape(req.body.username) + " AND password =" + con.escape(req.body.password);
 			con.query(quer, function(err, rows, fields) {
 				if(err){
 					console.log(err);
 				} else {
-					req.session.userid=rows[0].id;
- res.redirect("http://localhost:8080/PROJECTMain.html");
+					if(rows.length > 0){
+						req.session.userid=rows[0].id;
+ 						res.redirect("http://localhost:8080/PROJECTMain.html");
+					} else {
+						req.session.msg = "Invalid login";
+						return res.redirect('/');
 				}
 			});
-		} else {
-			req.session.msg = "Invalid login";
-			return res.redirect('/');
-		}
-	});
-	db.login(req.body.username, req.body.password);
 });
 
 app.get('/logout', function(req, res) {
