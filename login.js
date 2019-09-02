@@ -1,6 +1,3 @@
-var database = require('./database');
-var db = new database();
-
 var express = require('express');
 var app = express();
 var session = require('client-sessions');
