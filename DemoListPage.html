@@ -4,7 +4,50 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" type="text/css" href="Demostylesheet.css">
-
+<script>
+function load() {
+    	$.ajax({
+    		type: "GET",
+    		url: 'http://localhost:8080/posts',
+    		contentType: "application/json; charset=utf-8",
+    		success: function(msg) {
+    			document.getElementById('listPosts').innerhtml = msg;
+    		},
+    		error: function(jgXHR, textStatus, errorThrown) {
+			alert("Error: " + textStatus + " " + errorThrown);
+		}
+    	});
+	getCities();
+  }
+function filter() {
+	var filter = $('#filter').val();
+    	$.ajax({
+    		type: "GET",
+    		url: 'http://localhost:8080/filter?from=' + filter,
+    		contentType: "application/json; charset=utf-8",
+    		success: function(msg) {
+    			document.getElementById('listPosts').innerhtml = msg;
+    		},
+    		error: function(jgXHR, textStatus, errorThrown) {
+			alert("Error: " + textStatus + " " + errorThrown);
+		}
+    	});
+  }
+  function getCities()
+  {
+    $.ajax({
+    	type: "GET",
+    	url: 'http://localhost:8080/citylist',
+    	contentType: "application/json; charset=utf-8",
+    	success: function(msg) {
+    		document.getElementById('filter').innerhtml = msg;
+    	},
+    	error: function(jgXHR, textStatus, errorThrown) {
+		alert("Error: " + textStatus + " " + errorThrown);
+	}
+    });
+  }
+</script>
 </head>
 
 <body>
@@ -28,7 +71,7 @@
 </header>
 
 
-<div class="ListingCont">
+<div class="ListingCont" id="listPosts">
 <center>
   <h1>Demo Listing HERE</h1>
 
