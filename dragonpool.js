@@ -110,7 +110,11 @@ app.get("/posts",function(req,res){
     for (var i=0;i<rows.length;i++)
     {
       var date = rows[i].date;
-      posts_str += "<li><b>" + rows[i].type + " Passengers in " + rows[i].from_loc + " to " + rows[i].to_loc + "</b><br>User: " + rows[i].account_id + "<br>Description: " + rows[i].description + "<br>Date: " + date + "</li>";
+			var month = date.getMonth();
+			var day = date.getDate();
+			var year = date.getFullYear();
+			var date_str = month + "/" + day + "/" + year;
+      posts_str += "<li><b>" + rows[i].type + " Passengers in " + rows[i].from_loc + " to " + rows[i].to_loc + "</b><br>User: " + rows[i].account_id + "<br>Description: " + rows[i].description + "<br>Date: " + date_str + "</li>";
     }
     posts_str += "</ul>";
   }
@@ -155,8 +159,12 @@ app.get("/filter",function(req,res){
   {
     for (var i=0;i<rows.length;i++)
     {
-      var date = rows[i].date;
-      posts_str += "<li><b>" + rows[i].type + " Passengers in " + rows[i].from_loc + " to " + rows[i].to_loc + "</b><br>User: " + rows[i].first_name + " " + rows[i].last_name + "<br>Description: " + rows[i].description + "<br>Date: " + date + "</li>";
+			var date = rows[i].date;
+			var month = date.getMonth();
+			var day = date.getDate();
+			var year = date.getFullYear();
+			var date_str = month + "/" + day + "/" + year;
+      posts_str += "<li><b>" + rows[i].type + " Passengers in " + rows[i].from_loc + " to " + rows[i].to_loc + "</b><br>User: " + rows[i].first_name + " " + rows[i].last_name + "<br>Description: " + rows[i].description + "<br>Date: " + date_str + "</li>";
     }
     posts_str += "</ul";
   }
