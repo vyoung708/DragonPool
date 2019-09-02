@@ -188,7 +188,7 @@ app.post("/addaccount",function(req,res){
 //Add a post
 //Added code that pulls the ID from the database based on the username (passed in through query) - may not be necessary later on
 app.post("/addpost",function(req,res){
-    con.query("INSERT INTO POSTS (account_id, from_loc, to_loc, type, date, description, num_riders) VALUES (" + req.session.userid + ", '" + req.body.from_loc + "', '" + req.body.to_loc + "', '" + req.body.type + "', '" + req.body.date + "', '" + req.body.description + "', " + req.body.num_riders + ")",
+    con.query("INSERT INTO POSTS (account_id, from_loc, to_loc, type, date, description, num_riders) VALUES ('" + req.session.userid + "', '" + req.body.from_loc + "', '" + req.body.to_loc + "', '" + req.body.type + "', '" + req.body.date + "', '" + req.body.description + "', '" + req.body.num_riders + "')",
     function(err,rows,fields) {
     	if (err) {
       		res.send("Error");
