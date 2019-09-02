@@ -30,27 +30,27 @@ app.use(bodyParser.json());
 
 
 var con = mysql.createConnection({
-	
+
 host: 'localhost',
-	
-user: 'vly25',
-	
-password: 'f1nb4ry0un6',
-	
+
+user: 'root',
+
+password: 'password',
+
 database: 'school'
 });
 
 con.connect(function(err) {
-	
+
 if (err) {
-		
+
 console.log(err);
 	}
-	
+
 else {
-		
+
 console.log('Database successfully connected');
-	
+
 }
 });
 
@@ -58,21 +58,21 @@ var session = require('client-sessions');
 
 
 app.use(session({
-	
+
 cookieName: 'session',
-	
+
 secret: 'edwardallenpoe1234',
-	
+
 duration: 30*60*1000,
-	
+
 activeDuration: 5*60*1000,
 }));
 
 
 app.use(function(req, res, next) {
-    
+
 res.header("Access-Control-Allow-Origin", "*");
-    
+
 res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
 });

@@ -12,6 +12,7 @@ function populate() {
     		type: "GET",
     		url: "http://localhost:8080/posts",
     		success: function(msg) {
+          $('#listPosts').html(msg);
     			document.getElementById("listPosts").innerhtml = msg;
     		},
     		error: function(jgXHR, textStatus, errorThrown) {
@@ -23,7 +24,7 @@ function populate() {
     	url: 'http://localhost:8080/citylist',
     	contentType: "application/json; charset=utf-8",
     	success: function(msg) {
-    		document.getElementById("filter").innerhtml = "Filter Posts: " + msg;
+    		$('#filter').html(msg);
     	},
     	error: function(jgXHR, textStatus, errorThrown) {
 		alert("Error: " + textStatus + " " + errorThrown);
@@ -37,7 +38,7 @@ function filter() {
     		url: 'http://localhost:8080/filter?from=' + filter,
     		contentType: "application/json; charset=utf-8",
     		success: function(msg) {
-    			document.getElementById('listPosts').innerhtml = msg;
+    			$('#listPosts').html(msg);
     		},
     		error: function(jgXHR, textStatus, errorThrown) {
 			alert("Error: " + textStatus + " " + errorThrown);
@@ -48,7 +49,7 @@ function filter() {
 </head>
 
 <body onload="populate()">
-	
+
 <header>
     <div class="container">
       <a href="DemoMainPage.html">
@@ -58,8 +59,7 @@ function filter() {
       <nav>
         <ul>
           <!-- Main links to other pages -->
-          <li><a href="DemoDisplayAccount.html">ACCOUNT</a></li>
-          <li><a href="DemoCreateAccount.html">Sign In</a></li>
+          <li><a href="DemoCreateAccount.html">ACCOUNT</a></li>
           <li><a href="DemoFormCreation.html">CREATE LISTING</a></li>
           <li><a href="DemoListPage.html">SEARCH LISTING</a></li>
           <li><a href="DemoContactPage.html">CONTACT</a></li>
