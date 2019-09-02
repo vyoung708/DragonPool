@@ -5,7 +5,58 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" type="text/css" href="Demostylesheet.css">
-
+<script>
+  function login(){
+    var user = $("#username").val();
+    var pass = $("#password").val();
+    var params = { username: user, password: pass };
+    $.ajax({
+      type: "POST",
+      url: 'http://localhost:8080/login',
+      headers: {"Access-Control-Allow-Origin": "*"},
+      data: params,
+      dataType: 'text',
+      contentType: "application/json; charset=utf-8",
+      success: function(msg) {
+        alert("Logged In");
+      },
+      error: function(msg) {
+        alert("Error");
+    }
+    });
+  }
+  function addAccount()
+  {
+    var un = $("#un");
+    var pw = $("#pw");
+    var em = $("#em");
+    var fn = $("#fn");
+    var ln = $("#ln");
+    var tel = $("#tel");
+    var account = {
+      username: un,
+      password: pw,
+      email: em,
+      firstname: fn,
+      lastname: ln,
+      phone: tel
+    };
+    $.ajax({
+      type: "POST",
+      url: 'http://localhost:8080/addaccount',
+      headers: {"Access-Control-Allow-Origin": "*"},
+      data: account,
+      dataType: 'text',
+      contentType: "application/json; charset=utf-8",
+      success: function(msg) {
+        alert("Account added!");
+      },
+      error: function(msg) {
+        alert("Error");
+      }
+    });
+  }
+  </script>
 </head>
 
 <body>
@@ -35,22 +86,22 @@
     <div style="float: left; margin: 150px;">
         <H1>Sign Up</H1>
 
-        <input type="text" name="FirstName" placeholder="First Name" required="true">
+        <input type="text" id=fn name="FirstName" placeholder="First Name" required="true">
         <br>
         <br>
-        <input type="text" name="LastName" placeholder="Last Name" required="true">
+        <input type="text" id=ln name="LastName" placeholder="Last Name" required="true">
         <br>
         <br>
-        <input type="text" name="Email" placeholder="Email" required="true">
+        <input type="text" id=em name="Email" placeholder="Email" required="true">
         <br>
         <br>
-        <input type="tel" name="phone" placeholder="Phone Number (Opt)">
+        <input type="tel" id=tel name="phone" placeholder="Phone Number (Opt)">
         <br>
         <br>
-        <input type="text" name="UserName" placeholder="Username" required="true">
+        <input type="text" id=un name="UserName" placeholder="Username" required="true">
         <br>
         <br>
-        <input type="password" name="Password" placeholder="Password" required="true">
+        <input type="password" id=pw name="Password" placeholder="Password" required="true">
         <br>
         <br>
         <input type="submit" name="Submitbttn">
@@ -61,10 +112,10 @@
     <div style="float: right; margin: 150px;">
         <h1>Log In</h1>
 
-        <input type="text" name="Username" placeholder="Username" required="true">
+        <input type="text" name="Username" id="username" placeholder="Username" required="true">
         <br>
         <br>
-        <input type="password" name="Password" placeholder="Password" maxlength="10" required="true">
+        <input type="password" name="Password" id="password" placeholder="Password" maxlength="10" required="true">
         <br>
         <br>
         <input type="submit" name="Submitbttn">
