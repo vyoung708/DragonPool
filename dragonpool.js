@@ -140,7 +140,7 @@ app.post("/addaccount",function(req,res){
 	var lastQuery = req.body.lastname;
 	var phoneQuery = req.body.phone;
 	var found = 0;
-	con.query('SELECT * FROM ACCOUNT',
+	con.query('SELECT * FROM account',
 		function(err,rows,fields){
 			if(err){
 				console.log(err);
@@ -148,7 +148,7 @@ app.post("/addaccount",function(req,res){
 			else{
 				//checks if username or email already exists inside of the database
 				var i = 0;
-				while(i < row.length && found == 0){
+				while(i < rows.length && found == 0){
 					if(rows[i].username == userQuery || rows[i].email == emailQuery){
 						found = 1;
 					}
@@ -156,10 +156,10 @@ app.post("/addaccount",function(req,res){
 				}
 				if(found == 0){
 					if(phoneQuery != ""){
-						con.query('INSERT INTO ACCOUNT ("username","password","email","phone","first_name","last_name") VALUES ('+userQuery+','+passQuery+','+emailQuery+','+phoneQuery+','+firstQuery+','+lastQuery+')',
+						con.query('INSERT INTO ACCOUNT (username,password,email,phone,first_name,last_name) VALUES ('+con.escape(userQuery)+','+con.escape(passQuery)+','+con.escape(emailQuery)+','+con.escape(phoneQuery)+','+con.escape(firstQuery)+','+con.escape(lastQuery)+')',
 							function(err,result){
 								if(err){
-									console.log('Error Adding Account');
+									console.log(err);
 								}
 								else{
 									console.log('Account created without phone number');
@@ -170,7 +170,7 @@ app.post("/addaccount",function(req,res){
 						con.query('INSERT INTO ACCOUNT ("username","password","email","first_name","last_name") VALUES ('+userQuery+','+passQuery+','+emailQuery+','+firstQuery+','+lastQuery+')',
 							function(err,result){
 								if(err){
-									console.log('Error Adding Account');
+									console.log(err);
 								}
 								else{
 									console.log('Account created with phone number');
