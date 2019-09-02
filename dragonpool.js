@@ -31,6 +31,7 @@ con.connect(function(err) {
 		console.log('Database successfully connected');
 	}
 });
+var session = require('client-sessions');
 
 app.use(session({
 	cookieName: 'session',
