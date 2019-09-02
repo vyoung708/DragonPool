@@ -28,7 +28,7 @@ app.get('/', function (req, res){
 });
 
 app.post('/login', function(req, res) {
-		var quer = "SELECT id FROM accounts WHERE username =" + req.body.username + " AND password=" req.body.password;
+		var quer = "SELECT id FROM accounts WHERE username =" + req.body.username + " AND password=" + req.body.password;
 		con.query(quer, function(err, rows, fields) {
 			if(err){
 				console.log(err);
