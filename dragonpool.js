@@ -157,7 +157,7 @@ app.post("/addaccount",function(req,res){
 				if(found == 0){
 					if(phoneQuery != ""){
 						con.query('INSERT INTO ACCOUNT ("username","password","email","phone","first_name","last_name") VALUES ('+userQuery+','+passQuery+','+emailQuery+','+phoneQuery+','+firstQuery+','+lastQuery+')',
-							function(err,rows,fields){
+							function(err,result){
 								if(err){
 									console.log('Error Adding Account');
 								}
@@ -168,7 +168,7 @@ app.post("/addaccount",function(req,res){
 					}
 					else{
 						con.query('INSERT INTO ACCOUNT ("username","password","email","first_name","last_name") VALUES ('+userQuery+','+passQuery+','+emailQuery+','+firstQuery+','+lastQuery+')',
-							function(err,rows,fields){
+							function(err,result){
 								if(err){
 									console.log('Error Adding Account');
 								}
@@ -188,8 +188,8 @@ app.post("/addaccount",function(req,res){
 //Add a post
 //Added code that pulls the ID from the database based on the username (passed in through query) - may not be necessary later on
 app.post("/addpost",function(req,res){
-    con.query("INSERT INTO POSTS (account_id, from_loc, to_loc, type, date, description, num_riders) VALUES ('" + req.session.userid + "', '" + req.body.from_loc + "', '" + req.body.to_loc + "', '" + req.body.type + "', '" + req.body.date + "', '" + req.body.description + "', '" + req.body.num_riders + "')",
-    function(err,rows,fields) {
+    con.query("INTO POSTS (account_id, from_loc, to_loc, type, date, description, num_riders) VALUES ('" + req.session.userid + "', '" + req.body.from_loc + "', '" + req.body.to_loc + "', '" + req.body.type + "', '" + req.body.date + "', '" + req.body.description + "', '" + req.body.num_riders + "')",
+    function(err,result) {
     	if (err) {
       		res.send("Error");
     	}
@@ -214,7 +214,7 @@ app.post("/edit",function(req,res){
 	if(passQuery != ""){
 	//each con.query updates a column of the database that is associated with the username
 	con.query('UPDATE student SET password= CASE WHEN NOT password = "'+passQuery+'" THEN "'+passQuery+ '" ELSE password END WHERE username="'+userQuery+'"',
-			function(err,row,fields){
+			function(err,result){
 				if(err)
 					console.log(err);
 				else
@@ -223,7 +223,7 @@ app.post("/edit",function(req,res){
 	}
 	if(emailQuery != ""){
 	con.query('UPDATE student SET email= CASE WHEN NOT email = "'+emailQuery+'" THEN "'+emailQuery+ '" ELSE email END WHERE username="'+userQuery+'"',
-			function(err,row,fields){
+			function(err,result){
 				if(err)
 					console.log(err);
 				else
@@ -232,7 +232,7 @@ app.post("/edit",function(req,res){
 	}
 	if(firstQuery != ""){
 	con.query('UPDATE student SET first_name= CASE WHEN NOT first_name = "'+firstQuery+'" THEN "'+firstQuery+ '" ELSE first_name END WHERE username="'+userQuery+'"',
-			function(err,row,fields){
+			function(err,result){
 				if(err)
 					console.log(err);
 				else
@@ -241,7 +241,7 @@ app.post("/edit",function(req,res){
 	}
 	if(lastQuery != ""){
 	con.query('UPDATE student SET last_name= CASE WHEN NOT last_name = "'+lastQuery+'" THEN "'+lastQuery+ '" ELSE last_name END WHERE username="'+userQuery+'"',
-			function(err,row,fields){
+			function(err,result){
 				if(err)
 					console.log(err);
 				else
@@ -250,7 +250,7 @@ app.post("/edit",function(req,res){
 	}
 	if(phoneQuery != ""){
 	con.query('UPDATE student SET phone= CASE WHEN NOT phone = "'+phoneQuery+'" THEN "'+phoneQuery+ '" ELSE phone END WHERE username="'+userQuery+'"',
-			function(err,row,fields){
+			function(err,result){
 				if(err)
 					console.log(err);
 				else
@@ -292,6 +292,13 @@ app.post("/editpost",function(req,res){
 				quer += param + "=" + con.escape(req.query[param]);
 			}
 		}
+		con.query(quer, function(err, result){
+			if(err){
+				console.log(err);
+			} else {
+				console.log(result.affectedRows);
+			}
+		});
 	}
 });
 
