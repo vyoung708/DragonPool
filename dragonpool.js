@@ -391,6 +391,7 @@ app.post('/login', function(req, res) {
 					} else {
 						req.session.msg = "Invalid login";
 						return res.redirect('/');
+					}
 				}
 			});
 });
