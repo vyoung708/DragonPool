@@ -73,7 +73,7 @@ app.get("/posts",function(req,res){
   {
     for (var i=0;i<rows.length;i++)
     {
-      date = rows[i].date;
+      var date = rows[i].date;
       posts_str += "<li><b>" + rows[i].type + " Passengers in " + rows[i].from_loc + " to " + rows[i].to_loc + "</b><br>User: " + rows[i].first_name + " " + rows[i].last_name + "<br>Description: " + rows[i].description + "<br>Date: " + date + "</li>";
     }
     posts_str += "</ul";
@@ -85,7 +85,7 @@ app.get("/posts",function(req,res){
 //Get list of distinct 'from cities' - this can be used to generate a dropdown of cities for the filter
 app.get("/citylist", function(req,res){
   citylist = [];
-  con.query("SELECT DISTINCT(from_loc) from POSTS;",
+  con.query("SELECT DISTINCT(to_loc) from POSTS",
   function(err,rows,fields)
   {
   if (err)
@@ -105,9 +105,10 @@ app.get("/citylist", function(req,res){
 
 //Filter posts by city/state
 app.get("/filter",function(req,res){
-	var from = req.query.from;
+  var from = req.query.from;
   var posts_str = "<ul>";
-  con.query("select POSTS.account_id, from_loc, to_loc, type, date, description, num_riders, ACCOUNT.id, first_name, last_name, email from POSTS, ACCOUNT where POSTS.account_id = ACCOUNT.id & POSTS.from_loc = '" + from + "';",
+  var quer = "SELECT * FROM posts WHERE posts.from_loc=" + con.escape(from);
+  con.query(quer,
   function(err,rows,fields)
   {
   if (err)
@@ -118,7 +119,7 @@ app.get("/filter",function(req,res){
   {
     for (var i=0;i<rows.length;i++)
     {
-      date = rows[i].date;
+      var date = rows[i].date;
       posts_str += "<li><b>" + rows[i].type + " Passengers in " + rows[i].from_loc + " to " + rows[i].to_loc + "</b><br>User: " + rows[i].first_name + " " + rows[i].last_name + "<br>Description: " + rows[i].description + "<br>Date: " + date + "</li>";
     }
     posts_str += "</ul";
@@ -140,77 +141,63 @@ app.post("/addaccount",function(req,res){
 	var found = 0;
 	con.query('SELECT * FROM ACCOUNT',
 		function(err,rows,fields){
-			if(err)
+			if(err){
 				console.log(err);
+			}
 			else{
 				//checks if username or email already exists inside of the database
 				var i = 0;
-				while(i < row.length || found == 0){
-					if(rows[i].username == userQuery || rows[i].email == emailQuery)
+				while(i < row.length && found == 0){
+					if(rows[i].username == userQuery || rows[i].email == emailQuery){
 						found = 1;
+					}
 					i++;
 				}
 				if(found == 0){
 					if(phoneQuery != ""){
 						con.query('INSERT INTO ACCOUNT ("username","password","email","phone","first_name","last_name") VALUES ('+userQuery+','+passQuery+','+emailQuery+','+phoneQuery+','+firstQuery+','+lastQuery+')',
 							function(err,rows,fields){
-								if(err)
+								if(err){
 									console.log('Error Adding Account');
+								}
 								else{
 									console.log('Account created without phone number');
-							}
+								}
 						});
 					}
 					else{
 						con.query('INSERT INTO ACCOUNT ("username","password","email","first_name","last_name") VALUES ('+userQuery+','+passQuery+','+emailQuery+','+firstQuery+','+lastQuery+')',
 							function(err,rows,fields){
-								if(err)
+								if(err){
 									console.log('Error Adding Account');
+								}
 								else{
 									console.log('Account created with phone number');
+								}
+						});
 					}
 				}
-				else if(found == 1)
+				else if(found == 1) {
 					res.send('Username/Email currently in use');
+				}
 			}
-		});
-})
+	});
+});
 
 //Add a post
 //Added code that pulls the ID from the database based on the username (passed in through query) - may not be necessary later on
 app.post("/addpost",function(req,res){
-  username = req.query.user;
-  id = 0;
-  con.query("SELECT id from ACCOUNT where ACCOUNT.username = '" + username + "';",
-  function(err,rows,fields)
-  {
-  if (err)
-  {
-    res.send("Error");
-  }
-  else if (rows.length > 0)
-  {
-    id = rows[0];
-    con.query("INSERT INTO POSTS (account_id, from_loc, to_loc, type, date, description, num_riders) VALUES (" + id + ", '" + from_loc + "', '" + to_loc + "', '" + type + "', '" + date + "', '" + description + "', " + num_riders + ");",
-    function(err,rows,fields)
-    {
-    if (err)
-    {
-      res.send("Error");
-    }
-    else
-    {
-      res.send("Success");
+    con.query("INSERT INTO POSTS (account_id, from_loc, to_loc, type, date, description, num_riders) VALUES (" + req.session.userid + ", '" + req.body.from_loc + "', '" + req.body.to_loc + "', '" + req.body.type + "', '" + req.body.date + "', '" + req.body.description + "', " + req.body.num_riders + ")",
+    function(err,rows,fields) {
+    	if (err) {
+      		res.send("Error");
+    	}
+    	else {
+      		res.send("Success");
+    	}
     }
     });
-  }
-  else
-  {
-    res.send("No account found for this user");
-  }
-  });
-  });
-
+});
 
 //Edit account information from the database
 app.post("/edit",function(req,res){
@@ -298,7 +285,7 @@ app.post("/editpost",function(req,res){
 		var quer = "UPDATE posts SET ";
 		var count = 0;
 		for (var param in req.query){
-			if(param != "account_id" and count != 0){
+			if(param != "account_id" && count != 0){
 				quer += " AND " + param + "=" + con.escape(req.query[param]);
 			} else if (param != "account_id") {
 				quer += param + "=" + con.escape(req.query[param]);
