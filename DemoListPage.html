@@ -32,7 +32,7 @@ function populate() {
     });
   }
 function filter() {
-	var filter = $('#filter').val();
+	var filter = $('#filter option:selected').text();
     	$.ajax({
     		type: "GET",
     		url: 'http://localhost:8080/filter?from=' + filter,
@@ -71,7 +71,7 @@ function filter() {
 <div id = "filter" style="background-color: #808080">
 <select><option value="Pittsburgh, PA">Pittsburgh, PA</option></select>
 </div>
-<input type="button" value="Filter" onclick="filter()"><br>
+<button onclick="filter()"> Filter </button>
 <div class="ListingCont" id="listPosts">
 <ul><li><b>Looking For Passengers in Pittsburgh, PA to Philadelphia, PA</b><br>User: John Doe<br>Description: Ride back from Labor Day Weekend<br>Date: Wed Sep 04 2019 00:00:00 GMT-0400 (Eastern Daylight Time)</li></ul>
 </div>

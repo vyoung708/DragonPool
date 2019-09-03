@@ -143,7 +143,7 @@ app.get("/citylist", function(req,res){
 app.get("/filter",function(req,res){
   var from = req.query.from;
   var posts_str = "<ul>";
-  var quer = "SELECT * FROM posts WHERE posts.from_loc=" + con.escape(from);
+  var quer = "SELECT * FROM posts WHERE from_loc = " + con.escape(from);
   con.query(quer,
   function(err,rows,fields)
   {
@@ -160,9 +160,9 @@ app.get("/filter",function(req,res){
 			var day = date.getDate();
 			var year = date.getFullYear();
 			var date_str = month + "/" + day + "/" + year;
-      posts_str += "<li><b>" + rows[i].type + " Passengers in " + rows[i].from_loc + " to " + rows[i].to_loc + "</b><br>User: " + rows[i].first_name + " " + rows[i].last_name + "<br>Description: " + rows[i].description + "<br>Date: " + date_str + "</li>";
+      posts_str += "<li><b>" + rows[i].type + " Passengers in " + rows[i].from_loc + " to " + rows[i].to_loc + "</b><br>User: " + rows[i].account_id + "<br>Description: " + rows[i].description + "<br>Date: " + date_str + "</li>";
     }
-    posts_str += "</ul";
+    posts_str += "</ul>";
   }
   res.send(posts_str);
 });
