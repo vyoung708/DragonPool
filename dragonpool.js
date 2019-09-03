@@ -94,7 +94,7 @@ app.get("/home",function(req,res){
 
 app.get("/posts",function(req,res){
   var posts_str = "<ul>";
-  con.query("SELECT * FROM posts",
+  con.query("SELECT * FROM posts, account WHERE id = account_id",
   function(err,rows,fields)
   {
   if (err)
@@ -110,7 +110,7 @@ app.get("/posts",function(req,res){
 			var day = date.getDate();
 			var year = date.getFullYear();
 			var date_str = month + "/" + day + "/" + year;
-      posts_str += "<li><b>" + rows[i].type + " Passengers in " + rows[i].from_loc + " to " + rows[i].to_loc + "</b><br>User: " + rows[i].account_id + "<br>Description: " + rows[i].description + "<br>Date: " + date_str + "</li>";
+      posts_str += "<li><b>" + rows[i].type + " Passengers in " + rows[i].from_loc + " to " + rows[i].to_loc + "</b><br>User: " + rows[i].email + "<br>Description: " + rows[i].description + "<br>Date: " + date_str + "</li>";
     }
     posts_str += "</ul>";
   }
@@ -344,11 +344,12 @@ app.post("/editpost",function(req,res){
 //Loads account information
 app.get("/loadaccount",function(req,res){
 	var quer = "SELECT * FROM account WHERE id = " + req.session.userid;
-	var listStr = "<ul>";
+	var listStr = "";
 	con.query(quer, function(err, rows, fields) {
 		if(err){
 			console.log(err);
 		} else {
+			listStr += '<h3>User Information</h3><ul>';
 			for (var i = 0; i < rows.length; i++){
 				listStr += "<li>Username: " + rows[i].username + "</li>";
 				listStr += "<li>First Name: " + rows[i].first_name + "</li>";
@@ -356,35 +357,41 @@ app.get("/loadaccount",function(req,res){
 				listStr += "<li>Email: " + rows[i].email + "</li>";
 				listStr += "<li>Phone No.: " + rows[i].phone + "</li>";
 			}
+			listStr += "</ul>";
 		}
 	});
-	listStr += "</ul>";
 	quer = "SELECT * FROM posts WHERE account_id=" + req.session.userid;
-	listStr += "<br>Posts:<br><ul>";
 	con.query(quer, function(err, rows, fields) {
 		if(err){
 			console.log(err);
 		} else {
+			listStr += "<h3>User Posts</h3><ul>";
 			for (var i = 0; i < rows.length; i++){
+				var date = rows[i].date;
+				var month = date.getMonth();
+				var day = date.getDate();
+				var year = date.getFullYear();
+				var date_str = month + "/" + day + "/" + year;
 				listStr += "<li>Post ID: " + rows[i].post_id + "</li>";
 				listStr += "<li>From: " + rows[i].from_loc + "</li>";
 				listStr += "<li>To: " + rows[i].to_loc + "</li>";
 				listStr += "<li>Type: " + rows[i].type + "</li>";
-				listStr += "<li>Date: " + rows[i].date + "</li>";
+				listStr += "<li>Date: " + date_str + "</li>";
 				listStr += "<li>Desc: " + rows[i].description + "</li>";
 				listStr += "<li>Riders: " + rows[i].num_riders + "</li>";
 			}
 		}
+		res.send(listStr);
 	});
 	listStr += "</ul>";
-	res.send(listStr);
+
 });
 
 app.post('/login', function(req, res) {
 		var quer = "SELECT id FROM account WHERE username =" + con.escape(req.body.username) + " AND password =" + con.escape(req.body.password);
 			con.query(quer, function(err, rows, fields) {
 				if(err){
-					console.log(err);
+					req.session.msg("Invalid login");
 				} else {
 					if(rows.length > 0){
 						req.session.userid=rows[0].id;
