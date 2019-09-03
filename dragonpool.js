@@ -343,9 +343,9 @@ app.post("/editpost",function(req,res){
 
 //Loads account information
 app.get("/loadaccount",function(req,res){
-	var quer = "SELECT * FROM accounts WHERE id=" + req.session.userid;
+	var quer = "SELECT * FROM account WHERE id = " + req.session.userid;
 	var listStr = "<ul>";
-	con.connect(quer, function(err, rows, fields) {
+	con.query(quer, function(err, rows, fields) {
 		if(err){
 			console.log(err);
 		} else {
@@ -361,7 +361,7 @@ app.get("/loadaccount",function(req,res){
 	listStr += "</ul>";
 	quer = "SELECT * FROM posts WHERE account_id=" + req.session.userid;
 	listStr += "<br>Posts:<br><ul>";
-	con.connect(quer, function(err, rows, fields) {
+	con.query(quer, function(err, rows, fields) {
 		if(err){
 			console.log(err);
 		} else {
@@ -377,6 +377,7 @@ app.get("/loadaccount",function(req,res){
 		}
 	});
 	listStr += "</ul>";
+	res.send(listStr);
 });
 
 app.post('/login', function(req, res) {

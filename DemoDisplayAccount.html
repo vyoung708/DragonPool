@@ -13,9 +13,11 @@ function loadaccount() {
     		url: 'http://localhost:8080/loadaccount',
     		contentType: "application/json; charset=utf-8",
     		success: function(msg) {
+					console.log(msg);
     			$('#ListingCont').html(msg);
     		},
     		error: function(jgXHR, textStatus, errorThrown) {
+					console.log(textStatus);
 			alert("Error: " + textStatus + " " + errorThrown);
 		}
     	});
