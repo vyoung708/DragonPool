@@ -6,6 +6,34 @@
 <link rel="stylesheet" type="text/css" href="Demostylesheet.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js">
 </script>
+
+<script>
+function appendPost()
+{
+  var listing = {
+    'from_loc': $('#from_loc').val(),
+    'to_loc': $('#to_loc').val(),
+    'description': $('#description').val(),
+    'date': $('#date').val(),
+    'num_riders': $('#num_riders').val(),
+    'type': $('#type').val()
+  };
+  $.ajax({
+    type: "POST",
+    url: 'http://localhost:8080/addpost',
+    contentType: "application/json; charset=utf-8",
+    data: JSON.stringify(listing),
+    dataType: 'text',
+    success: function(msg) {
+      alert("Listing added!");
+    },
+    error: function(jgXHR, textStatus, errorThrown) {
+      console.log(errorThrown);
+  alert("Error: " + textStatus + " " + errorThrown);
+}
+  });
+}
+</script>
 </head>
 
 <body>
@@ -33,39 +61,33 @@
 <div class="ListingCont">
 <center>
 
-<form>
-  <br>
-  <br>
-  First name:<br>
-  <input type="text" name="firstname">
-  <br>
-  Last name:<br>
-  <input type="text" name="lastname">
-  <br>
   Looking For:<br>
-  <select>
-    <option value="Driver">Driver</option>
-    <option value="Passengers">Passengers</option>
+  <select id='type'>
+    <option value="Looking For">Driver</option>
+    <option value="Providing">Passengers</option>
   </select>
   <br>
   Date:<br>
-  <input type="date" name="DatePicked" placeholder="Select Date" min= "2019-01-01" max="2020-01-01" >
+  <input type="date" id="date" placeholder="Select Date" min= "2019-01-01" max="2020-01-01" >
   <br>
   <br>
   From:<br>
-  <input type="text" name="From" placeholder="From">
+  <input type="text" id="from_loc" placeholder="From">
   <br>
   <br>
   To:<br>
-  <input type="text" name="To" placeholder="To">
+  <input type="text" id="to_loc" placeholder="To">
   <br>
   <br>
+  Description:<br>
+  <textarea id="description"> </textarea>
+  <br>
+  <br>
+  Number of Riders:<br>
+  <input type="text" id="num_riders" placeeholder="Number of Riders">
   <!-- Button That Submits gathered data/could 'onclick' a function -->
-  <input type="submit" value="Submit">
+  <input type="submit" value="Submit" onclick="appendPost()">
   <br>
-  <br>
-</form>
-
 </center>
 </div>
 
