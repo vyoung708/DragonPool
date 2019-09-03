@@ -94,7 +94,7 @@ app.get("/home",function(req,res){
 
 app.get("/posts",function(req,res){
   var posts_str = "<ul>";
-  con.query("SELECT * FROM posts",
+  con.query("SELECT * FROM posts, account WHERE id = account_id",
   function(err,rows,fields)
   {
   if (err)
@@ -110,7 +110,7 @@ app.get("/posts",function(req,res){
 			var day = date.getDate();
 			var year = date.getFullYear();
 			var date_str = month + "/" + day + "/" + year;
-      posts_str += "<li><b>" + rows[i].type + " Passengers in " + rows[i].from_loc + " to " + rows[i].to_loc + "</b><br>User: " + rows[i].account_id + "<br>Description: " + rows[i].description + "<br>Date: " + date_str + "</li>";
+      posts_str += "<li><b>" + rows[i].type + " Passengers in " + rows[i].from_loc + " to " + rows[i].to_loc + "</b><br>User: " + rows[i].email + "<br>Description: " + rows[i].description + "<br>Date: " + date_str + "</li>";
     }
     posts_str += "</ul>";
   }
@@ -143,7 +143,7 @@ app.get("/citylist", function(req,res){
 app.get("/filter",function(req,res){
   var from = req.query.from;
   var posts_str = "<ul>";
-  var quer = "SELECT * FROM posts WHERE from_loc = " + con.escape(from);
+  var quer = "SELECT * FROM posts, account WHERE from_loc = " + con.escape(from) + " AND id = account_id";
   con.query(quer,
   function(err,rows,fields)
   {
@@ -160,7 +160,7 @@ app.get("/filter",function(req,res){
 			var day = date.getDate();
 			var year = date.getFullYear();
 			var date_str = month + "/" + day + "/" + year;
-      posts_str += "<li><b>" + rows[i].type + " Passengers in " + rows[i].from_loc + " to " + rows[i].to_loc + "</b><br>User: " + rows[i].account_id + "<br>Description: " + rows[i].description + "<br>Date: " + date_str + "</li>";
+      posts_str += "<li><b>" + rows[i].type + " Passengers in " + rows[i].from_loc + " to " + rows[i].to_loc + "</b><br>User: " + rows[i].email + "<br>Description: " + rows[i].description + "<br>Date: " + date_str + "</li>";
     }
     posts_str += "</ul>";
   }
