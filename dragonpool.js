@@ -160,7 +160,7 @@ app.get("/filter",function(req,res){
 			var day = date.getDate();
 			var year = date.getFullYear();
 			var date_str = month + "/" + day + "/" + year;
-      posts_str += "<li><b>" + rows[i].type + " Passengers in " + rows[i].from_loc + " to " + rows[i].to_loc + "</b><br>User: " + rows[i].account_id + "<br>Description: " + rows[i].description + "<br>Date: " + date_str + "</li>";
+      posts_str += "<li><b>" + rows[i].type + " Passengers in " + rows[i].from_loc + " to " + rows[i].to_loc + "</b><br>User: " + rows[i].email + "<br>Description: " + rows[i].description + "<br>Date: " + date_str + "</li>";
     }
     posts_str += "</ul>";
   }
