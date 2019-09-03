@@ -86,7 +86,7 @@ app.get('/', function (req, res){
 //Will redirect to the main html page
 
 app.get("/home",function(req,res){
-	return res.redirect('/PROJECTMain.html');
+	return res.redirect('/DemoMainPage.html');
 });
 
 
@@ -388,7 +388,7 @@ app.post('/login', function(req, res) {
 				} else {
 					if(rows.length > 0){
 						req.session.userid=rows[0].id;
- 						res.redirect("http://localhost:8080/PROJECTMain.html");
+ 						res.redirect("http://localhost:8080/DemoMainPage.html");
 					} else {
 						req.session.msg = "Invalid login";
 						return res.redirect('/');
